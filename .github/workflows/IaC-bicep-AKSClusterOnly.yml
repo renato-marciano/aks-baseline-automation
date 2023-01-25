@@ -148,7 +148,7 @@ jobs:
           region: ${{ github.event.inputs.REGION }}
           scope: subscription
           template: ./IaC/bicep/rg-spoke/cluster.bicep
-          parameters: ./IaC/bicep/rg-spoke/cluster.parameters.json appGatewayListenerCertificate=${{ env.APP_GATEWAY_LISTENER_CERTIFICATE }} aksIngressControllerCertificate=${{ env.AKS_INGRESS_CONTROLLER_CERTIFICATE }} targetVnetResourceId=${{ github.event.inputs.clusterVnetResourceId }} clusterAdminAadGroupObjectId=${{ github.event.inputs.clusterAdminAadGroupObjectId }} a0008NamespaceReaderAadGroupObjectId=${{ github.event.inputs.a0008NamespaceReaderAadGroupObjectId }} vNetResourceGroup=rg-spokes-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} gitOpsBootstrappingRepoBranch=${{ github.ref_name }}          
+          parameters: ./IaC/bicep/rg-spoke/cluster.parameters.json targetVnetResourceId=${{ github.event.inputs.clusterVnetResourceId }} clusterAdminAadGroupObjectId=${{ github.event.inputs.clusterAdminAadGroupObjectId }} a0008NamespaceReaderAadGroupObjectId=${{ github.event.inputs.a0008NamespaceReaderAadGroupObjectId }} vNetResourceGroup=rg-spokes-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} gitOpsBootstrappingRepoBranch=${{ github.ref_name }}
           failOnStdErr: false
           deploymentName: carml-cluster-${{ github.event.inputs.REGION }}
 
