@@ -500,7 +500,7 @@ module kubernetesConfigurationFlux2 '../CARML/Microsoft.KubernetesConfiguration/
         retryIntervalInSeconds: null
         prune: true
         force: false
-      },
+      }
       workloads: {
         path: './workloads/aspnet'
         dependsOn: []
