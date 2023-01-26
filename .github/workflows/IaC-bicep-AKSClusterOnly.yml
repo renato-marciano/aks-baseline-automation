@@ -14,12 +14,12 @@ on:
       clusterVnetResourceId:
         description: 'The vnet resource ID (not uuid)'
         required: true
-        default: '/subscriptions/f75f6327-8759-4b37-87d4-b44bb79ba52b/resourceGroups/rg-spokes-eastus-005/providers/Microsoft.Network/virtualNetworks/vnet-spoke-BU0001A0008-00'
+        default: '/subscriptions/f75f6327-8759-4b37-87d4-b44bb79ba52b/resourceGroups/rg-spokes-eastus-007/providers/Microsoft.Network/virtualNetworks/vnet-spoke-BU0001A0008-00'
       ACRNAME:
         description: 'The Name of the ACR resource'
         required: true
         type: string
-        default: 'acraks3lx55ezkyvmiw'
+        default: 'acraksnvpgmulvs6fgu'
       clusterAdminAadGroupObjectId:
         description: 'K8S Admin Azure AAD Group ObjectID'
         required: true
@@ -34,6 +34,7 @@ on:
         description: 'Suffix added to resource group'
         required: true
         type: string
+        default: '007'
 
 env:
   event_sha: +refs/pull/${{ github.event.issue.number }}/merge
