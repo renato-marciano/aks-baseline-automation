@@ -182,18 +182,6 @@ jobs:
           failOnStdErr: false
           deploymentName: carml-cluster-${{ github.event.inputs.REGION }}
 
-      - name: "Deploy Cluster"
-        id: cluster
-        uses: azure/arm-deploy@v1
-        with:
-          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
-          region: ${{ github.event.inputs.REGION }}
-          scope: subscription
-          template: ./IaC/bicep/rg-spoke/cluster.bicep
-          parameters: ./IaC/bicep/rg-spoke/cluster.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} clusterAdminAadGroupObjectId=${{ github.event.inputs.clusterAdminAadGroupObjectId }} a0008NamespaceReaderAadGroupObjectId=${{ github.event.inputs.a0008NamespaceReaderAadGroupObjectId }} vNetResourceGroup=rg-spokes-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} gitOpsBootstrappingRepoBranch=${{ github.ref_name }}
-          failOnStdErr: false
-          deploymentName: carml-cluster-${{ github.event.inputs.REGION }}
-
         # Temporary workaround until we figure out why steps.cluster.outputs.keyVaultName is blank
       - name: "Get KeyVault Name"
         id: akv_name
