@@ -79,7 +79,7 @@ var clusterIngressSubnetName = 'snet-clusteringressservices'
 var vnetNodePoolSubnetResourceId = '${targetVnetResourceId}/subnets/${clusterNodesSubnetName}'
 // var vnetIngressServicesSubnetResourceId = '${targetVnetResourceId}/subnets/snet-cluster-ingressservices'
 var clusterControlPlaneIdentityName = 'mi-${clusterName}-controlplane'
-var aksIngressDomainName = '${domainName}'
+var aksIngressDomainName = 'aks-ingress.${domainName}'
 var isUsingAzureRBACasKubernetesRBAC = (subscription().tenantId == k8sControlPlaneAuthorizationTenantId)
 
 resource rg 'Microsoft.Resources/resourceGroups@2019-05-01' existing = {
