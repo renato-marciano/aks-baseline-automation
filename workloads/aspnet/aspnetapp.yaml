@@ -65,6 +65,19 @@ spec:
         env:
         - name: ASPNETCORE_URLS
           value: "http://*:8080"
+      - name: curl   
+        image: acraksp4n4frfqsq276.azurecr.io/curlimages/curl:latest
+        command:
+          - sleep
+          - "3600"
+        imagePullPolicy: IfNotPresent
+        resources:
+          requests:
+            cpu: 100m
+            memory: 64Mi
+          limits:
+            cpu: 200m
+            memory: 128Mi
       nodeSelector:
        agentpool: npuser01
 ---
@@ -129,3 +142,7 @@ spec:
             port:
               number: 80
 ---
+
+acraksosqmvq73354k6
+
+az acr import -n acraksosqmvq73354k6 --source docker.io/curlimages/curl:latest
