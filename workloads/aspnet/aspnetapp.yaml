@@ -21,9 +21,9 @@ spec:
         app.kubernetes.io/name: aspnetapp
     spec:
       automountServiceAccountToken: false
-      securityContext:
-        runAsUser: 10001
-        runAsGroup: 3000
+      # securityContext:
+      #   runAsUser: 10001
+      #   runAsGroup: 3000
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -49,12 +49,12 @@ spec:
       - name: aspnet-webapp-sample
         image: mcr.microsoft.com/dotnet/samples:aspnetapp
         imagePullPolicy: Always
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: false
-          capabilities:
-            drop:
-              - all
+        # securityContext:
+        #   allowPrivilegeEscalation: false
+        #   readOnlyRootFilesystem: false
+        #   capabilities:
+        #     drop:
+        #       - all
         resources:
           requests:
             cpu: 50m
@@ -65,19 +65,6 @@ spec:
         env:
         - name: ASPNETCORE_URLS
           value: "http://*:8080"
-      - name: curl
-        image: acraksp4n4frfqsq276.azurecr.io/curlimages/curl:latest
-        command:
-          - sleep
-          - "3600"
-        imagePullPolicy: IfNotPresent
-        resources:
-          requests:
-            cpu: 100m
-            memory: 64Mi
-          limits:
-            cpu: 200m
-            memory: 128Mi
       nodeSelector:
        agentpool: npuser01
 ---
