@@ -11,7 +11,7 @@ metadata:
   labels:
     app.kubernetes.io/name: aspnetapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: aspnetapp
@@ -65,7 +65,7 @@ spec:
         env:
         - name: ASPNETCORE_URLS
           value: "http://*:8080"
-      - name: curl   
+      - name: curl
         image: acraksp4n4frfqsq276.azurecr.io/curlimages/curl:latest
         command:
           - sleep
@@ -142,7 +142,3 @@ spec:
             port:
               number: 80
 ---
-
-acraksosqmvq73354k6
-
-az acr import -n acraksosqmvq73354k6 --source docker.io/curlimages/curl:latest
