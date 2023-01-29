@@ -102,12 +102,11 @@ jobs:
           REPOSITORY=$(echo $ACRSERVER | tr '[:upper:]' '[:lower:]')
 
           CURRENT_IP_ADDRESS=$(curl -s -4 https://ifconfig.io)
-          az acr network-rule add -n ${ACR_NAME} --ip-address ${CURRENT_IP_ADDRESS}
+          az acr network-rule add -n $ACRNAME --ip-address ${CURRENT_IP_ADDRESS}
 
           sleep 30
 
           echo "Requesting ACR build on $ACRSERVER for image $IMAGEREPO:${{ github.sha }}"
           az acr build -t $REPOSITORY/$IMAGEREPO:${{ github.sha }} -r $ACRNAME $APPREPOPATH/.
-          ACR_NAME=acraksp4n4frfqsq276
 
-          az acr network-rule remove -n ${ACR_NAME} --ip-address ${CURRENT_IP_ADDRESS}
+          az acr network-rule remove -n $ACR_NAME --ip-address ${CURRENT_IP_ADDRESS}
