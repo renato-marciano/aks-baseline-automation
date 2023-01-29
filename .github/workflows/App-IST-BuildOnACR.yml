@@ -76,6 +76,12 @@ jobs:
           echo "RG is ${{  github.event.inputs.RG }}"
           echo "AKS name is ${{ github.event.inputs.AKSNAME }}"
 
+      - name: "Register Providers"
+        run: |
+          az feature register --namespace Microsoft.ContainerService --name AKS-ExtensionManager
+          az feature register --namespace Microsoft.ContainerService --name EnableOIDCIssuerPreview
+          az feature register --namespace Microsoft.ContainerService --name AKS-AzureDefender
+
       - name: Azure Login
         uses: Azure/login@v1.4.3
         with:
@@ -83,6 +89,7 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      
       - name: Connect to Azure Container Registry (ACR)
         id: acrconnect
         run: |
