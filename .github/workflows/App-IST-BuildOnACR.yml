@@ -83,11 +83,6 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      - name: Debugging
-        run: |
-          echo "Debugging"
-          az acr list
-
       - name: ACR build
         id: acrbuild
         env:
@@ -101,12 +96,5 @@ jobs:
           echo "Downcasing $ACRSERVER for valid repository name"
           REPOSITORY=$(echo $ACRSERVER | tr '[:upper:]' '[:lower:]')
 
-          CURRENT_IP_ADDRESS=$(curl -s -4 https://ifconfig.io)
-          az acr network-rule add -n $ACRNAME --ip-address ${CURRENT_IP_ADDRESS}
-
-          sleep 30
-
           echo "Requesting ACR build on $ACRSERVER for image $IMAGEREPO:${{ github.sha }}"
           az acr build -t $REPOSITORY/$IMAGEREPO:${{ github.sha }} -r $ACRNAME $APPREPOPATH/.
-
-          az acr network-rule remove -n $ACR_NAME --ip-address ${CURRENT_IP_ADDRESS}
