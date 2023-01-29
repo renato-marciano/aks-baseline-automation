@@ -150,6 +150,7 @@ module acrAks '../CARML/Microsoft.ContainerRegistry/registries/deploy.bicep' = {
     publicNetworkAccess: 'Disabled'
     dataEndpointEnabled: true
     networkRuleBypassOptions: 'AzureServices'
+    exportPolicyStatus: 'enabled'
     zoneRedundancy: 'Disabled' // This Preview feature only supports three regions at this time, and eastus2's paired region (centralus), does not support this. So disabling for now.
     replications: [
       {
