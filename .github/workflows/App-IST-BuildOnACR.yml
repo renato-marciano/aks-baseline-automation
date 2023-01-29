@@ -1,6 +1,6 @@
 # This workflow demonstrates ACR building and storing a container image, and deploying to Kubernetes
 # It is split into separate jobs for readability but could be squashed into a single job if that best suits your scenario
-name: App Deploy Azure Vote - BuildOnACR
+name: App Deploy IST to ACR
 
 on:
   workflow_call:
@@ -47,6 +47,8 @@ on:
         required: true
       AZURE_SUBSCRIPTION_ID:
         required: true
+      GH_PAT:
+        required: true
 
 permissions:
       id-token: write
@@ -67,6 +69,7 @@ jobs:
         with:
           repository: ${{ inputs.APPREPO}}
           ref: ${{ inputs.APPREPOREF}}
+          token: ${{ secrets.GH_PAT }}
 
       - name: Job parameter inspection
         run: |
