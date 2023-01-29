@@ -5,8 +5,8 @@ metadata:
   namespace: traefik
 spec:
   type: 0
-  resourceID: TRAEFIK_USER_ASSIGNED_IDENTITY_RESOURCE_ID
-  clientID: TRAEFIK_USER_ASSIGNED_IDENTITY_CLIENT_ID
+  resourceID: /subscriptions/f75f6327-8759-4b37-87d4-b44bb79ba52b/resourceGroups/rg-ist-eastus-010/providers/Microsoft.ManagedIdentity/userAssignedIdentities/podmi-ingress-controller
+  clientID: 94a738fa-b433-4dee-b8dc-e3a7231e12e0
 ---
 apiVersion: aadpodidentity.k8s.io/v1
 kind: AzureIdentityBinding

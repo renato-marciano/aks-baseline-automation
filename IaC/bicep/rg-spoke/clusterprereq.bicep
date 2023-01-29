@@ -43,8 +43,9 @@ var clusterName = 'aks-${subRgUniqueString}'
 var logAnalyticsWorkspaceName = 'la-${clusterName}'
 var agwName = 'apw-${clusterName}'
 var akvPrivateDnsZonesName = 'privatelink.vaultcore.azure.net'
+var orgAppId = 'ist'
 var aksIngressDomainName = 'aks-ingress.${domainName}'
-var aksBackendDomainName = 'bu0001a0008-00.${aksIngressDomainName}'
+var aksBackendDomainName = '${orgAppId}.${aksIngressDomainName}'
 var vnetName = split(targetVnetResourceId, '/')[8]
 var clusterNodesSubnetName = 'snet-clusternodes'
 var vnetNodePoolSubnetResourceId = '${targetVnetResourceId}/subnets/${clusterNodesSubnetName}'
@@ -346,7 +347,7 @@ module agw '../CARML/Microsoft.Network/applicationGateways/deploy.bicep' = {
         name: 'apw-frontend-ip-configuration'
         properties: {
           publicIPAddress: {
-            id: '${subscription().id}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Network/publicIpAddresses/pip-BU0001A0008-00'
+            id: '${subscription().id}/resourceGroups/${vNetResourceGroup}/providers/Microsoft.Network/publicIpAddresses/pip-${orgAppId}-00'
           }
         }
       }
@@ -440,7 +441,7 @@ module agw '../CARML/Microsoft.Network/applicationGateways/deploy.bicep' = {
           sslCertificate: {
             id: '${subscription().id}/resourceGroups/${resourceGroupName}/providers/Microsoft.Network/applicationGateways/${agwName}/sslCertificates/${agwName}-ssl-certificate'
           }
-          hostName: 'bicycle.${domainName}'
+          hostName: '${orgAppId}.${domainName}'
           hostNames: []
           requireServerNameIndication: false
         }

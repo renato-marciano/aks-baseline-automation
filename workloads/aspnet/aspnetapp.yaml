@@ -11,7 +11,7 @@ metadata:
   labels:
     app.kubernetes.io/name: aspnetapp
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app.kubernetes.io/name: aspnetapp
@@ -21,9 +21,9 @@ spec:
         app.kubernetes.io/name: aspnetapp
     spec:
       automountServiceAccountToken: false
-      securityContext:
-        runAsUser: 10001
-        runAsGroup: 3000
+      # securityContext:
+      #   runAsUser: 10001
+      #   runAsGroup: 3000
       affinity:
         podAntiAffinity:
           requiredDuringSchedulingIgnoredDuringExecution:
@@ -49,12 +49,12 @@ spec:
       - name: aspnet-webapp-sample
         image: mcr.microsoft.com/dotnet/samples:aspnetapp
         imagePullPolicy: Always
-        securityContext:
-          allowPrivilegeEscalation: false
-          readOnlyRootFilesystem: false
-          capabilities:
-            drop:
-              - all
+        # securityContext:
+        #   allowPrivilegeEscalation: false
+        #   readOnlyRootFilesystem: false
+        #   capabilities:
+        #     drop:
+        #       - all
         resources:
           requests:
             cpu: 50m
@@ -111,14 +111,14 @@ spec:
   # ingressClassName: "traefik-internal"
   tls:
   - hosts:
-      - bu0001a0008-00.aks-ingress.contoso.com
+      - ist.aks-ingress.contoso.com
         # it is possible to opt for certificate management strategy with dedicated
         # certificates for each TLS SNI route.
         # In this Rereference Implementation for the sake of simplicity we use a
         # wildcard default certificate added at Ingress Controller configuration level which is *.example.com
         # secretName: <bu0001a0008-00-example-com-tls-secret>
   rules:
-  - host: bu0001a0008-00.aks-ingress.contoso.com
+  - host: ist.aks-ingress.contoso.com
     http:
       paths:
       - path: /

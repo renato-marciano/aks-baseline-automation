@@ -127,7 +127,7 @@ module aksIngressDomain '../CARML/Microsoft.Network/privateDnsZones/deploy.bicep
     name: aksIngressDomainName
     a: [
       {
-        name: 'bu0001a0008-00'
+        name: 'ist'
         ttl: 3600
         aRecords: [
           {
@@ -494,6 +494,15 @@ module kubernetesConfigurationFlux2 '../CARML/Microsoft.KubernetesConfiguration/
     kustomizations: {
       unified: {
         path: './shared-services'
+        dependsOn: []
+        timeoutInSeconds: 300
+        syncIntervalInSeconds: 300
+        retryIntervalInSeconds: null
+        prune: true
+        force: false
+      }
+      workloads: {
+        path: './workloads/aspnet'
         dependsOn: []
         timeoutInSeconds: 300
         syncIntervalInSeconds: 300

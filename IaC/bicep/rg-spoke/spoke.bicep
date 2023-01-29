@@ -37,7 +37,7 @@ param hubLaWorkspaceResourceId string
 @description('The resource ID of the Firewall in the hub')
 param hubFwResourceId string
 
-var orgAppId = 'BU0001A0008'
+var orgAppId = 'ist'
 var clusterVNetName = 'vnet-spoke-${orgAppId}-00'
 var routeTableName = 'route-to-${location}-hub-fw'
 var nsgNodePoolsName = 'nsg-${clusterVNetName}-nodepools'
