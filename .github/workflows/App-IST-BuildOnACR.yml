@@ -96,16 +96,7 @@ jobs:
           echo "Downcasing $ACRSERVER for valid repository name"
           REPOSITORY=$(echo $ACRSERVER | tr '[:upper:]' '[:lower:]')
 
-          echo "Adding network rule"
-          az acr update --name $ACRNAME --public-network-enabled true
-          CURRENT_IP_ADDRESS=$(curl -s -4 https://ifconfig.io)
-          echo $CURRENT_IP_ADDRESS
-          az acr network-rule add -n $ACRNAME --ip-address ${CURRENT_IP_ADDRESS}
-
           echo "Requesting ACR build on $ACRSERVER for image $IMAGEREPO:${{ github.sha }}"
           az acr build -t $REPOSITORY/$IMAGEREPO:${{ github.sha }} -r $ACRNAME $APPREPOPATH/.
 
-          echo "Removing network rule"
-          az acr network-rule remove -n $ACRNAME --ip-address ${CURRENT_IP_ADDRESS}
-          az acr update --name $ACRNAME --public-network-enabled false
 
