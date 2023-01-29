@@ -85,7 +85,9 @@ jobs:
 
       - name: "Register Providers"
         run: |
+          az feature register --namespace Microsoft.ContainerService --name AKS-ExtensionManager
           az feature register --namespace Microsoft.ContainerService --name EnableOIDCIssuerPreview
+          az feature register --namespace Microsoft.ContainerService --name AKS-AzureDefender
 
       - name: Connect to Azure Container Registry (ACR)
         id: acrconnect
