@@ -83,6 +83,27 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: Connect to Azure Container Registry (ACR)
+        id: acrconnect
+        run: |
+          echo "Retrieving access token from $ACRNAME"
+          TOKEN=$(az acr login -n $ACRNAME --expose-token)
+
+          if [ -z "$TOKEN" ]
+          then
+            echo "ACR Token was not retrieved successfully"
+            exit 1
+          fi
+
+          ACRTOKEN=$(echo $TOKEN | jq -r ".accessToken")
+          LOGINSERVER=$(echo $TOKEN | jq -r ".loginServer")
+
+          echo "ACR Login Server: $LOGINSERVER"
+          echo "::set-output name=loginServer::$LOGINSERVER"
+
+          echo "Passing token as stdin to docker login"
+          echo $ACRTOKEN | docker login $LOGINSERVER -u 00000000-0000-0000-0000-000000000000 --password-stdin
+
       - name: ACR build
         id: acrbuild
         env:
