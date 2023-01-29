@@ -98,5 +98,3 @@ jobs:
 
           echo "Requesting ACR build on $ACRSERVER for image $IMAGEREPO:${{ github.sha }}"
           az acr build -t $REPOSITORY/$IMAGEREPO:${{ github.sha }} -r $ACRNAME $APPREPOPATH/.
-
-
