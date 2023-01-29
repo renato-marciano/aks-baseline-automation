@@ -163,6 +163,18 @@ jobs:
           failOnStdErr: false
           deploymentName: carml-registry-${{ github.event.inputs.REGION }}
 
+      - name: "Deploy SQL"
+        id: sql
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
+          region: ${{ github.event.inputs.REGION }}
+          scope: subscription
+          template: ./IaC/bicep/rg-spoke/sqldb.bicep
+          parameters: ./IaC/bicep/rg-spoke/sql.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }}
+          failOnStdErr: false
+          deploymentName: carml-sql-${{ github.event.inputs.REGION }}
+
       # Import core images hosted in public container registries to be used during bootstrapping
       - name: "Import Images into ACR for flux"
         id: image_import
