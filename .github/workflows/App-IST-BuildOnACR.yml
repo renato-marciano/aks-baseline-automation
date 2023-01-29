@@ -3,12 +3,12 @@
 name: App Deploy IST to ACR
 
 on:
-  workflow_call:
+  workflow_dispatch:
     inputs:
       RG:
         description: 'The Resource Group where your resources are deployed'
         required: true
-        default: "azure-samples/azure-voting-app-redis"
+        default: "rg-ist-eastus-010"
         type: string
       ACRNAME:
         description: 'The Name of the ACR resource'
@@ -57,24 +57,24 @@ permissions:
 jobs:
   BuildPush:
     runs-on: ubuntu-latest
-    environment: ${{ inputs.ENVIRONMENT }}
+    environment: ${{ github.event.inputs.ENVIRONMENT }}
     env:
-      APPNAME: "${{ inputs.APPNAME }}"
-      ACRNAME: "${{ inputs.ACRNAME}}"
-      RG: "${{ inputs.RG }}"
+      APPNAME: "${{ github.event.inputs.APPNAME }}"
+      ACRNAME: "${{ github.event.inputs.ACRNAME}}"
+      RG: "${{ github.event.inputs.RG }}"
 
     steps:
       - name: Get application code from repo
         uses: actions/checkout@v2
         with:
-          repository: ${{ inputs.APPREPO}}
-          ref: ${{ inputs.APPREPOREF}}
+          repository: ${{  github.event.inputs.APPREPO}}
+          ref: ${{ github.event.inputs.APPREPOREF}}
           token: ${{ secrets.GH_PAT }}
 
       - name: Job parameter inspection
         run: |
-          echo "RG is ${{ inputs.RG }}"
-          echo "AKS name is ${{ inputs.AKSNAME }}"
+          echo "RG is ${{  github.event.inputs.RG }}"
+          echo "AKS name is ${{ github.event.inputs.AKSNAME }}"
 
       - name: Azure Login
         uses: Azure/login@v1.4.3
@@ -92,8 +92,8 @@ jobs:
         id: acrbuild
         env:
           ACRSERVER: "${{ env.ACRNAME }}.azurecr.io"
-          APPREPOPATH: "${{ inputs.APPREPOPATH}}"
-          IMAGEREPO: "${{ inputs.APPNAME }}"
+          APPREPOPATH: "${{  github.event.inputs.APPREPOPATH}}"
+          IMAGEREPO: "${{  github.event.inputs.APPNAME }}"
         run: |
           echo "Verifying directory contents in repo path $APPREPOPATH"
           ls $APPREPOPATH
