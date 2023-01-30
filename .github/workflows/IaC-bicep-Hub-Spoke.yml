@@ -57,24 +57,24 @@ jobs:
         uses: azure/arm-deploy@v1
         with:
           subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
-          region: east
+          region: eastus
           scope: subscription
           template: ./IaC/bicep/rg-hub/hub-default.bicep
-          parameters: ./IaC/bicep/rg-hub/hub-default.parameters.json  resourceGroupName=rg-hubs-eastus-011 location=east
+          parameters: ./IaC/bicep/rg-hub/hub-default.parameters.json  resourceGroupName=rg-hubs-eastus-011 location=eastus
           failOnStdErr: false
-          deploymentName: carml-hub-east
+          deploymentName: carml-hub-eastus
 
       - name: "Deploy Spoke"
         id: spoke
         uses: azure/arm-deploy@v1
         with:
           subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
-          region: east
+          region: eastus
           scope: subscription
           template: ./IaC/bicep/rg-spoke/spoke.bicep
-          parameters: ./IaC/bicep/rg-spoke/spoke.parameters.json hubVnetResourceId=${{ steps.hub.outputs.hubVnetId }} hubLaWorkspaceResourceId=${{ steps.hub.outputs.hubLaWorkspaceResourceId }} hubFwResourceId=${{ steps.hub.outputs.hubFwResourceId }} resourceGroupName=rg-spokes-east-011 location=east
+          parameters: ./IaC/bicep/rg-spoke/spoke.parameters.json hubVnetResourceId=${{ steps.hub.outputs.hubVnetId }} hubLaWorkspaceResourceId=${{ steps.hub.outputs.hubLaWorkspaceResourceId }} hubFwResourceId=${{ steps.hub.outputs.hubFwResourceId }} resourceGroupName=rg-spokes-eastus-011 location=eastus
           failOnStdErr: false
-          deploymentName: carml-spoke-east
+          deploymentName: carml-spoke-eastus
 
 
 
