@@ -1,0 +1,84 @@
+name: 'IaC Deploy CARML based SQL'
+
+on:
+  workflow_dispatch:
+    inputs:
+      ENVIRONMENT:
+        description: 'A GitHub Environment to pull action secrets from'
+        required: true
+        type: environment
+      REGION:
+        description: 'The Azure region to deploy to'
+        required: true
+        default: eastus
+      rgSuffix:
+        description: 'Suffix added to resource group'
+        required: true
+        type: string
+      clusterVnetResourceId:
+        description: 'The vnet resource ID (not uuid)'
+        required: true
+        default: '/subscriptions/f75f6327-8759-4b37-87d4-b44bb79ba52b/resourceGroups/rg-spokes-eastus-016/providers/Microsoft.Network/virtualNetworks/vnet-spoke-ist-00'
+
+
+env:
+  event_sha: +refs/pull/${{ github.event.issue.number }}/merge
+
+permissions:
+      id-token: write
+      contents: read
+
+jobs:
+  prereqs:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.ENVIRONMENT }}
+    name: Prerequisite Checks
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: "Parameter Check"
+        run: |
+          echo "Environment : ${{ github.event.inputs.ENVIRONMENT }}"
+          echo "REGION : ${{ github.event.inputs.REGION }}"
+
+      - name: Azure Login
+        uses: Azure/login@v1.4.3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+  deployment:
+    runs-on: ubuntu-latest
+    environment: ${{ github.event.inputs.ENVIRONMENT }}
+    name: Deployment
+    needs: [prereqs]
+    steps:
+      - name: "Checkout"
+        uses: actions/checkout@v2
+        with:
+          fetch-depth: 0
+
+      - name: Azure Login
+        uses: Azure/login@v1.4.3
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      - name: "Deploy SQL"
+        id: sql
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
+          region: ${{ github.event.inputs.REGION }}
+          scope: subscription
+          template: ./IaC/bicep/rg-spoke/sqldb.bicep
+          parameters: ./IaC/bicep/rg-spoke/sqldb.parameters.json targetVnetResourceId=${{ github.event.inputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} administratorLogin=${{ secrets.SQL_ADMIN_LOGIN }} administratorLoginPassword=${{ secrets.SQL_ADMIN_PASSWORD }}
+          failOnStdErr: false
+          deploymentName: carml-sql-${{ github.event.inputs.REGION }}
+
+
