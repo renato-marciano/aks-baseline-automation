@@ -223,18 +223,10 @@ jobs:
 
           sleep 60
 
-          PASSWORD=${{ secrets.SQL_ADMIN_PASSWORD }}
-          ID=${{ secrets.SQL_ADMIN_LOGIN }}
-          SQL_SERVER=${{ steps.sql.outputs.sqlServerName }}
-          echo $SQL_SERVER
-          "CONNECTION_STRING=Server=tcp:${SQL_SERVER}.database.windows.net,1433;Database=db-ist;User ID=${ID};Password=${PASSWORD};Encrypt=true;Connection Timeout=30;"
-
           CURRENT_IP_ADDRESS=$(curl -s -4 https://ifconfig.io)
           az keyvault network-rule add -n ${{ env.AKV_NAME }} --ip-address ${CURRENT_IP_ADDRESS}
 
           sleep 30
-
-          az keyvault secret set --vault-name ${{ env.AKV_NAME }} --name connectionString --value "${CONNECTION_STRING}"
 
           cat traefik-ingress-internal-aks-ingress-tls.crt traefik-ingress-internal-aks-ingress-tls.key > traefik-ingress-internal-aks-ingress-tls.pem
           az keyvault certificate import -f traefik-ingress-internal-aks-ingress-tls.pem -n traefik-ingress-internal-aks-ingress-tls --vault-name ${{ env.AKV_NAME }}
