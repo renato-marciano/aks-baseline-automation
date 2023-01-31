@@ -186,7 +186,7 @@ jobs:
           region: ${{ github.event.inputs.REGION }}
           scope: subscription
           template: ./IaC/bicep/rg-spoke/sqldb.bicep
-          parameters: ./IaC/bicep/rg-spoke/sqldb.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} administratorLogin=${{ secrets[github.event.inputs.administratorLogin] }} administratorLoginPassword=${{ secrets[github.event.inputs.administratorLoginPassword]}}
+          parameters: ./IaC/bicep/rg-spoke/sqldb.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} administratorLogin=${{ secrets.SQL_ADMIN_LOGIN }} administratorLoginPassword=${{ secrets.SQL_ADMIN_PASSWORD }}
           failOnStdErr: false
           deploymentName: carml-sql-${{ github.event.inputs.REGION }}
 
@@ -231,8 +231,8 @@ jobs:
 
           sleep 60
 
-          PASSWORD=${{ secrets[github.event.inputs.administratorLoginPassword]}}
-          ID=${{ secrets[github.event.inputs.administratorLogin]}}
+          PASSWORD=${{ secrets.SQL_ADMIN_PASSWORD ]}}
+          ID=${{ secrets.SQL_ADMIN_LOGIN ]}}
           SQL_SERVER=${{ steps.sql.outputs.sqlServerName }}
           echo $SQL_SERVER
           "CONNECTION_STRING=Server=tcp:${SQL_SERVER}.database.windows.net,1433;Database=db-ist;User ID=${ID};Password=${PASSWORD};Encrypt=true;Connection Timeout=30;"
