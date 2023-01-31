@@ -25,6 +25,14 @@ on:
         description: 'Suffix added to resource group'
         required: true
         type: string
+      administratorLogin:
+        description: 'SQL User Id'
+        required: true
+        type: string
+      administratorLoginPassword:
+        description: 'SQL Password must be at least 8 characters and contain uppercase, lowercase, number, and non-numeric'
+        required: true
+        type: string
 
 env:
   event_sha: +refs/pull/${{ github.event.issue.number }}/merge
@@ -162,6 +170,13 @@ jobs:
           parameters: ./IaC/bicep/rg-spoke/acr.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }}
           failOnStdErr: false
           deploymentName: carml-registry-${{ github.event.inputs.REGION }}
+      
+      # Import core images hosted in public container registries to be used during bootstrapping
+      - name: "Import Images into ACR for flux"
+        id: image_import
+        run: |
+          az acr import --source docker.io/weaveworks/kured:1.10.1 -n ${{ steps.registry.outputs.containerRegistryName }} --force
+          az acr import --source docker.io/library/traefik:v2.8.1 -n ${{ steps.registry.outputs.containerRegistryName }} --force
 
       - name: "Deploy SQL"
         id: sql
@@ -171,16 +186,9 @@ jobs:
           region: ${{ github.event.inputs.REGION }}
           scope: subscription
           template: ./IaC/bicep/rg-spoke/sqldb.bicep
-          parameters: ./IaC/bicep/rg-spoke/sql.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }}
+          parameters: ./IaC/bicep/rg-spoke/sql.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} administratorLogin=${{ secrets[github.event.inputs.administratorLogin] }} administratorLoginPassword=${{ secrets[github.event.inputs.administratorLoginPassword]}}
           failOnStdErr: false
           deploymentName: carml-sql-${{ github.event.inputs.REGION }}
-
-      # Import core images hosted in public container registries to be used during bootstrapping
-      - name: "Import Images into ACR for flux"
-        id: image_import
-        run: |
-          az acr import --source docker.io/weaveworks/kured:1.10.1 -n ${{ steps.registry.outputs.containerRegistryName }} --force
-          az acr import --source docker.io/library/traefik:v2.8.1 -n ${{ steps.registry.outputs.containerRegistryName }} --force
 
       - name: "Deploy Cluster prerequisites"
         id: cluster_prereq
@@ -223,10 +231,18 @@ jobs:
 
           sleep 60
 
+          PASSWORD=${{ secrets[github.event.inputs.administratorLoginPassword]}}
+          ID=${{ secrets[github.event.inputs.administratorLogin]}}
+          SQL_SERVER=${{ steps.sql.outputs.sqlServerName }}
+          echo $SQL_SERVER
+          "CONNECTION_STRING=Server=tcp:${SQL_SERVER}.database.windows.net,1433;Database=db-ist;User ID=${ID};Password=${PASSWORD};Encrypt=true;Connection Timeout=30;"
+
           CURRENT_IP_ADDRESS=$(curl -s -4 https://ifconfig.io)
           az keyvault network-rule add -n ${{ env.AKV_NAME }} --ip-address ${CURRENT_IP_ADDRESS}
 
           sleep 30
+
+          az keyvault secret set --vault-name ${{ env.AKV_NAME }} --name connectionString --value "${CONNECTION_STRING}"
 
           cat traefik-ingress-internal-aks-ingress-tls.crt traefik-ingress-internal-aks-ingress-tls.key > traefik-ingress-internal-aks-ingress-tls.pem
           az keyvault certificate import -f traefik-ingress-internal-aks-ingress-tls.pem -n traefik-ingress-internal-aks-ingress-tls --vault-name ${{ env.AKV_NAME }}

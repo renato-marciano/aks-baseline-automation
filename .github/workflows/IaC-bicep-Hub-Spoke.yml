@@ -1,7 +1,7 @@
 name: 'IaC Deploy CARML Hub and SPoke'
 
 on:
-  push:
+  workflow_dispatch:
 
 env:
   event_sha: +refs/pull/${{ github.event.issue.number }}/merge
