@@ -223,8 +223,8 @@ jobs:
 
           sleep 60
 
-          PASSWORD=${{ secrets.SQL_ADMIN_PASSWORD ]}}
-          ID=${{ secrets.SQL_ADMIN_LOGIN ]}}
+          PASSWORD=${{ secrets.SQL_ADMIN_PASSWORD }}
+          ID=${{ secrets.SQL_ADMIN_LOGIN }}
           SQL_SERVER=${{ steps.sql.outputs.sqlServerName }}
           echo $SQL_SERVER
           "CONNECTION_STRING=Server=tcp:${SQL_SERVER}.database.windows.net,1433;Database=db-ist;User ID=${ID};Password=${PASSWORD};Encrypt=true;Connection Timeout=30;"
