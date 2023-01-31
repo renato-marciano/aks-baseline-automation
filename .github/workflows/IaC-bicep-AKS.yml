@@ -25,14 +25,6 @@ on:
         description: 'Suffix added to resource group'
         required: true
         type: string
-      administratorLogin:
-        description: 'SQL User Id'
-        required: true
-        type: string
-      administratorLoginPassword:
-        description: 'SQL Password must be at least 8 characters and contain uppercase, lowercase, number, and non-numeric'
-        required: true
-        type: string
 
 env:
   event_sha: +refs/pull/${{ github.event.issue.number }}/merge
