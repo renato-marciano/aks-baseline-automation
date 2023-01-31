@@ -60,7 +60,7 @@ module sqlPrivateEndpoint '../CARML/Microsoft.Network/privateEndpoints/deploy.bi
     groupIds: [
       'sqlServer'
     ]
-    serviceResourceId: sqldb.outputs.resourceId
+    serviceResourceId: sqlServer.outputs.resourceId
     privateDnsZoneGroup: {
       privateDNSResourceIds: [
         dnsPrivateZoneSql.outputs.resourceId
