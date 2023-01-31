@@ -186,7 +186,7 @@ jobs:
           region: ${{ github.event.inputs.REGION }}
           scope: subscription
           template: ./IaC/bicep/rg-spoke/sqldb.bicep
-          parameters: ./IaC/bicep/rg-spoke/sql.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} administratorLogin=${{ secrets[github.event.inputs.administratorLogin] }} administratorLoginPassword=${{ secrets[github.event.inputs.administratorLoginPassword]}}
+          parameters: ./IaC/bicep/rg-spoke/sqldb.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} administratorLogin=${{ secrets[github.event.inputs.administratorLogin] }} administratorLoginPassword=${{ secrets[github.event.inputs.administratorLoginPassword]}}
           failOnStdErr: false
           deploymentName: carml-sql-${{ github.event.inputs.REGION }}
 
