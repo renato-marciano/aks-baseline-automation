@@ -212,9 +212,21 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
+      - name: "Deploy Cluster"
+        id: cluster
+        uses: azure/arm-deploy@v1
+        with:
+          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
+          region: ${{ github.event.inputs.REGION }}
+          scope: subscription
+          template: ./IaC/bicep/rg-spoke/cluster.bicep
+          parameters: ./IaC/bicep/rg-spoke/cluster.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} clusterAdminAadGroupObjectId=${{ github.event.inputs.clusterAdminAadGroupObjectId }} a0008NamespaceReaderAadGroupObjectId=${{ github.event.inputs.a0008NamespaceReaderAadGroupObjectId }} vNetResourceGroup=rg-spokes-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} gitOpsBootstrappingRepoBranch=${{ github.ref_name }}
+          failOnStdErr: false
+          deploymentName: carml-cluster-${{ github.event.inputs.REGION }}
+
       # This step is just used for convenience as the certificate used in your environment will likely be generated and imported into KeyVault by your security team 
       # This step imports into KeyVault the same backend cert that was generated above for the App Gateway. This cert will be used by the Ingress Controller Traefik.
-      - name: "Cert Import into Key Vault for Traefik"
+      - name: "Traefik Cert and SQL Secrets Import into Key Vault"
         id: cert_import
         run: |
           ASSIGNEE_OBJ_ID=$(az ad sp show --id ${{ secrets.AZURE_CLIENT_ID }} --query id -o tsv)
@@ -244,14 +256,4 @@ jobs:
           az role assignment delete --role a4417e6f-fecd-4de8-b567-7b0420556985 --assignee $ASSIGNEE_OBJ_ID --scope $AKV_RESOURCE_ID
           az role assignment delete --role b86a8fe4-44ce-4948-aee5-eccb2c155cd7 --assignee $ASSIGNEE_OBJ_ID --scope $AKV_RESOURCE_ID
 
-      - name: "Deploy Cluster"
-        id: cluster
-        uses: azure/arm-deploy@v1
-        with:
-          subscriptionId: ${{ secrets.SUBSCRIPTION_ID }}
-          region: ${{ github.event.inputs.REGION }}
-          scope: subscription
-          template: ./IaC/bicep/rg-spoke/cluster.bicep
-          parameters: ./IaC/bicep/rg-spoke/cluster.parameters.json targetVnetResourceId=${{ steps.spoke.outputs.clusterVnetResourceId }} clusterAdminAadGroupObjectId=${{ github.event.inputs.clusterAdminAadGroupObjectId }} a0008NamespaceReaderAadGroupObjectId=${{ github.event.inputs.a0008NamespaceReaderAadGroupObjectId }} vNetResourceGroup=rg-spokes-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} location=${{ github.event.inputs.REGION }} resourceGroupName=rg-ist-${{ github.event.inputs.REGION }}-${{ github.event.inputs.rgSuffix }} gitOpsBootstrappingRepoBranch=${{ github.ref_name }}
-          failOnStdErr: false
-          deploymentName: carml-cluster-${{ github.event.inputs.REGION }}
+
