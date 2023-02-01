@@ -220,7 +220,8 @@ jobs:
           ASSIGNEE_OBJ_ID=$(az ad sp show --id ${{ secrets.AZURE_CLIENT_ID }} --query id -o tsv)
           AKV_RESOURCE_ID=$(az keyvault show -n ${{ env.AKV_NAME }} --query id -o tsv)
           TEMP_ROLEASSIGNMENT_TO_UPLOAD_CERT=$(az role assignment create --role a4417e6f-fecd-4de8-b567-7b0420556985 --assignee-principal-type serviceprincipal --assignee-object-id $ASSIGNEE_OBJ_ID --scope $AKV_RESOURCE_ID | jq '.id' )
-
+          TEMP_ROLEASSIGNMENT_TO_UPLOAD_SECRET=$(az role assignment create --role b86a8fe4-44ce-4948-aee5-eccb2c155cd7 --assignee-principal-type serviceprincipal --assignee-object-id $ASSIGNEE_OBJ_ID --scope $AKV_RESOURCE_ID | jq '.id' )
+          
           sleep 60
 
           PASSWORD=${{ secrets.SQL_ADMIN_PASSWORD }}
@@ -241,6 +242,7 @@ jobs:
 
           az keyvault network-rule remove -n ${{ env.AKV_NAME }} --ip-address ${CURRENT_IP_ADDRESS}
           az role assignment delete --role a4417e6f-fecd-4de8-b567-7b0420556985 --assignee $ASSIGNEE_OBJ_ID --scope $AKV_RESOURCE_ID
+          az role assignment delete --role b86a8fe4-44ce-4948-aee5-eccb2c155cd7 --assignee $ASSIGNEE_OBJ_ID --scope $AKV_RESOURCE_ID
 
       - name: "Deploy Cluster"
         id: cluster
